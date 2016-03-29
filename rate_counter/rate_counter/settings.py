@@ -40,6 +40,22 @@ INSTALLED_APPS = [
     'rate'
 ]
 
+INSTALLED_APPS += ("djcelery", )
+
+
+BROKER_URL = 'redis://localhost:6379/0'
+
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+CELERY_TASK_RESULT_EXPIRES = 7*86400  # 7 days
+
+CELERY_SEND_EVENTS = True
+
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+
+
+
+
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -120,3 +136,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+import djcelery
+djcelery.setup_loader()
