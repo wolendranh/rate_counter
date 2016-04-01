@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 from __future__ import absolute_import
-from celery.task import task
+from celery.task import periodic_task
 from .models import Institute, StudentGroup, Subject
 import requests
 from bs4 import BeautifulSoup
 import re
 
 
-@task
+@periodic_task(run_every=60*60)  # період запуску в секундах (кожну годину)
 def get_institutes_id():
 
     url = 'http://www.lp.edu.ua/node/40?inst=1&&semestr=1&semest_part=1'
@@ -19,7 +19,6 @@ def get_institutes_id():
     # тобто, весняний(0), осінній(1), перша(1) і друга(2).
     # Список всіх інститутів міститься на будь-якій сторінці розкладу,
     # а список груп, тільки на сторінці де вказаний інститут до якого вони належать.
-
 
     # Заповнення бази даних інститутами
     for option in soup.find_all('option'):
@@ -33,6 +32,7 @@ def get_institutes_id():
     print 'done with insts'
     get_group_id()
     get_subject_list()
+    print 'Your DB is up-to-date'
 
 
 def get_group_id():
@@ -61,6 +61,7 @@ def get_group_id():
 def get_subject_list():
     sem = 1
     sem_part = 1
+
     for grp_obj in StudentGroup.objects.all():
         print 'processing ' + grp_obj.institute.name + ' ' + grp_obj.name
         url = 'http://www.lp.edu.ua/node/40' \
@@ -70,18 +71,32 @@ def get_subject_list():
               '&semest_part='+str(sem_part)
         r = requests.get(url)
         soup = BeautifulSoup(r.content, "html.parser")
-
+        group_subjects = []
+        current_group_subjects = []
         # вся інформація про предмет (назва, викладач) міститься в цій div з таким класом.
         subjects = soup.find_all('div', {'class': 'vidst'})
-        group_subjects = []
+
         for subject in subjects:
             # тут витягую тільки текст першого компонента в заданому div (безпосередньо назву предмету)
             subject_name = subject.contents[0].text
             if subject_name not in group_subjects:
-                group_subjects.append(subject_name)
-        for subj in group_subjects:
-            print subj
-            sub_obj = Subject()
-            sub_obj.name = subj
-            sub_obj.group = grp_obj
-            sub_obj.save()
+                    group_subjects.append(subject_name)
+        # перевіряю чи вже існує такий набір предметів для конкретної групи:
+        for sub_obj in Subject.objects.filter(group=grp_obj):
+            current_group_subjects.append(sub_obj.name)
+
+        if group_subjects == current_group_subjects:
+            print 'ALREADY EXISTS'
+        else:
+            # якщо набір предметів з сайту і в базі відрізняються, додаю ті, яких немає в базі:
+            new_subjects = []
+            for item in group_subjects:
+                if item not in current_group_subjects:
+                    new_subjects.append(item)
+            for subj in new_subjects:
+                print subj
+                sub_obj = Subject()
+                sub_obj.name = subj
+                sub_obj.group = grp_obj
+                sub_obj.save()
+    print 'done with subjects'

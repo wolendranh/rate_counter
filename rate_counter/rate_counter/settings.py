@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,20 +41,13 @@ INSTALLED_APPS = [
     'rate'
 ]
 
+# CELERY STUFF
 INSTALLED_APPS += ("djcelery", )
-
-
 BROKER_URL = 'redis://localhost:6379/0'
-
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
 CELERY_TASK_RESULT_EXPIRES = 7*86400  # 7 days
-
 CELERY_SEND_EVENTS = True
-
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
-
-
 
 
 MIDDLEWARE_CLASSES = [
@@ -137,5 +131,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# SOME MORE CELERY STUFF
 import djcelery
 djcelery.setup_loader()
