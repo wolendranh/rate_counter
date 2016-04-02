@@ -29,6 +29,6 @@ Set up
 ###### In virtual env: #######
 
   - pip install -r requirements.txt
-  - sudo chmod +x FillDB
-  - ./FillDB
+  - sudo chmod +x get-data.sh
+  - ./get-data.sh
   

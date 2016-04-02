@@ -3,100 +3,96 @@ from __future__ import absolute_import
 from celery.task import periodic_task
 from .models import Institute, StudentGroup, Subject
 import requests
+import logging
 from bs4 import BeautifulSoup
 import re
 
 
-@periodic_task(run_every=60*60)  # період запуску в секундах (кожну годину)
-def get_institutes_id():
+@periodic_task(run_every=60*60)  # periodicity of execution in seconds (1 hour)
+def parse_data():
 
-    url = 'http://www.lp.edu.ua/node/40?inst=1&&semestr=1&semest_part=1'
-    r = requests.get(url)
-    soup = BeautifulSoup(r.content, "html.parser")
+    get_institutes()
+    get_logger().info('Completed institutes collection')
+    get_groups()
+    get_logger().info('Completed groups collection')
+    get_subjects()
+    get_logger().info('Completed subjects collection')
+    get_logger().info('DB is up-to-date')
 
-    # я подивився структуру сторінки розкладу і виявив, що всі назви і значення інститутів і груп
-    # завжди містяться між тегами <option>. Але також там містяться значення поточного семестру і його половини,
-    # тобто, весняний(0), осінній(1), перша(1) і друга(2).
-    # Список всіх інститутів міститься на будь-якій сторінці розкладу,
-    # а список груп, тільки на сторінці де вказаний інститут до якого вони належать.
 
-    # Заповнення бази даних інститутами
+def get_institutes():
+
+    soup = set_bs(get_url())
+
+    # in source code of NULP site's schedule page all names and IDs of institutes and groups are located in <option> tag
+    # list of all of the institutes is present on any schedule page,
+    # list of groups is present in page, URL of which contain ID of related institute
+
+    # Filling database with Institute objects
     for option in soup.find_all('option'):
         if len(option.text) == 4:
-            print option.text
-            if not Institute.objects.filter(name=option.text).exists():
-                obj = Institute()
-                obj.name = option.text
-                obj.site_id = option.get('value')
-                obj.save()
-    print 'done with insts'
-    get_group_id()
-    get_subject_list()
-    print 'Your DB is up-to-date'
+            inst_obj, created = Institute.objects.get_or_create(name=option.text, site_id=option.get('value'))
+            message(inst_obj, created)
 
 
-def get_group_id():
+def get_groups():
 
-    # В цій функції я формую URL залежно від ID інституту і заповнюю базу даних групами
     for inst_obj in Institute.objects.all():
-        print 'processing', inst_obj.name
-        url = 'http://www.lp.edu.ua/node/40?inst=' + \
-              str(inst_obj.site_id) + \
-              '&group=semestr=1&semest_part=1'
-        r = requests.get(url)
-        soup = BeautifulSoup(r.content, "html.parser")
+        get_logger().info(u"Processing Institute {}".format(inst_obj.name))
+        soup = set_bs(get_url(str(inst_obj.site_id)))
 
         for option in soup.find_all('option'):
             if re.match(ur'.+-.+', option.text):
-                print option.text
-                if not StudentGroup.objects.filter(name=option.text).exists():
-                    grp_obj = StudentGroup()
-                    grp_obj.name = option.text
-                    grp_obj.site_id = option.get('value')
-                    grp_obj.institute = inst_obj
-                    grp_obj.save()
-    print 'done with group'
+                grp_obj, created = StudentGroup.objects.get_or_create(name=option.text,
+                                                                      site_id=option.get('value'),
+                                                                      institute=inst_obj)
+                message(grp_obj, created)
 
 
-def get_subject_list():
+def get_subjects():
     sem = 1
     sem_part = 1
-
     for grp_obj in StudentGroup.objects.all():
-        print 'processing ' + grp_obj.institute.name + ' ' + grp_obj.name
-        url = 'http://www.lp.edu.ua/node/40' \
-              '?inst=' + grp_obj.institute.site_id + \
-              '&group=' + grp_obj.site_id + \
-              '&semestr='+str(sem) + \
-              '&semest_part='+str(sem_part)
-        r = requests.get(url)
-        soup = BeautifulSoup(r.content, "html.parser")
-        group_subjects = []
-        current_group_subjects = []
-        # вся інформація про предмет (назва, викладач) міститься в цій div з таким класом.
+        get_logger().info(u"Processing Group {0} of {1} Institute".format(grp_obj.name, grp_obj.institute.name))
+        soup = set_bs(get_url(grp_obj.institute.site_id, grp_obj.site_id, str(sem), str(sem_part)))
+
+        # all information about subject (name, lecturer) located in div object with such class
         subjects = soup.find_all('div', {'class': 'vidst'})
 
         for subject in subjects:
-            # тут витягую тільки текст першого компонента в заданому div (безпосередньо назву предмету)
-            subject_name = subject.contents[0].text
-            if subject_name not in group_subjects:
-                    group_subjects.append(subject_name)
-        # перевіряю чи вже існує такий набір предметів для конкретної групи:
-        for sub_obj in Subject.objects.filter(group=grp_obj):
-            current_group_subjects.append(sub_obj.name)
+            # getting first component of div object (directly the name)
+            sub_obj, created = Subject.objects.get_or_create(name=subject.contents[0].text, group=grp_obj)
+            message(sub_obj, created)
 
-        if group_subjects == current_group_subjects:
-            print 'ALREADY EXISTS'
-        else:
-            # якщо набір предметів з сайту і в базі відрізняються, додаю ті, яких немає в базі:
-            new_subjects = []
-            for item in group_subjects:
-                if item not in current_group_subjects:
-                    new_subjects.append(item)
-            for subj in new_subjects:
-                print subj
-                sub_obj = Subject()
-                sub_obj.name = subj
-                sub_obj.group = grp_obj
-                sub_obj.save()
-    print 'done with subjects'
+
+def get_logger():
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    return logger
+
+
+def message(obj, created):
+    """
+    Creating a message if new object is added
+    """
+    if created:
+        get_logger().info(u"Adding {}".format(obj.name))
+
+
+def set_bs(url):
+    """
+    setting up a BeautifulSoup
+    """
+    r = requests.get(url)
+    return BeautifulSoup(r.content, "html.parser")
+
+
+def get_url(inst='1', group='', semestr='1', semestr_part='1'):
+    """
+    Forming URL of page for parsing data
+    """
+    return 'http://www.lp.edu.ua/node/40?inst={0}&group={1}&semestr={2}&semest_part={3}'.format(inst,
+                                                                                                group,
+                                                                                                semestr,
+                                                                                                semestr_part,
+                                                                                                )
