@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    Table | {{ block.super }}
+
+{% endblock title %}
+
+{% block content %}
+
+<form method="post">{% csrf_token %}
+    <select name="Institutes">
+    {% for inst_obj in inst_set %}
+        <option value="{{inst_obj.site_id}}">{{inst_obj.name}}</option>
+    {% endfor %}
+    </select>
+    <br><br>
+  <input type="submit" value="Обрати інститут">
+</form>
+
+{% if institute %}
+    <form method="post">{% csrf_token %}
+    <select name="Groups">
+    {% for grp in grp_set %}
+        {% if grp.institute.site_id = institute %}
+            <option value="{{grp.site_id}}">{{grp.name}}</option>
+        {% endif %}
+    {% endfor %}
+    </select>
+    <br><br>
+  <input type="submit" value="Обрати групу">
+</form>
+
+{% endif %}
+<div class='col-sm-12 col-sm-offset-1'>
+    <form method="post">{% csrf_token %}
+        <table>
+            {% if group %}
+            {% for subject in subj_set %}
+                {% if subject.group.site_id == group %}
+                <tr>
+                <td><p>{{subject.name}}</p></td>
+                <td><p><input name="kof" type="text" maxlength="2" size="5"></p></td>
+                <td><p><input name="bal" type="text" maxlength="3" size="5"></p></td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+            </table>
+    </form>
+
+</div>
+
+{% endblock content %}
