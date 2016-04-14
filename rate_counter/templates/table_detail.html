@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    {{ table.name }} | {{ block.super }}
+
+{% endblock title %}
+
+{% block content %}
+
+<div class='col-sm-6 col-sm-offset-3' style="background: lavender">
+    <h1>{{table.name}}</h1>
+    <form method="POST" action="" enctype="multipart/form-data" >{% csrf_token %}
+        <table>
+            {% if rows %}
+                <tr>
+                    <td height="32px"><strong>Subject name</strong></td>
+                    <td><strong>Coef</strong></td>
+                    <td><strong>Point</strong></td>
+                </tr>
+                {% for row in rows %}
+                    <tr>
+                        <td height="40px"><input size=41 onchange="submit" value="{{row.name}}" name="name{{row.id}}" type="text"  maxlength="100"></td>
+                        <td><input style="width: 4em" onchange="submit" value="{{row.coefficient}}" name="kof{{row.id}}" type="number" step="0.5" min="0" max="10"></td>
+                        <td><input style="width: 4em" onchange="submit" value="{{row.point}}" name="bal{{row.id}}" type="number" min="0" max="100"></td>
+                        <td><a href="{% url 'rate:delete_row' row.id %}" class="btn btn-default" role="button">Delete</a></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+        <p>
+            <a href="{% url 'rate:create_row' table.id %}" class="btn btn-primary" role="button">Add new row</a>
+            {% if rows %}
+                    <input type="submit" class="btn btn-primary" value="Save" formaction="{% url 'rate:edit_rows' table.id %}"/>
+            {% endif %}
+        </p>
+    </form>
+
+    <div style="float: right">
+
+                <form method="post">{% csrf_token %}
+                    Get your subject list<br>
+                    <label for="institutes">Institute</label>
+                    <select name="Institutes" id="institutes" onchange="submit();">
+                        <option></option>
+                        {% for inst_obj in inst_set %}
+                            <option value="{{inst_obj.site_id}}">{{inst_obj.name}}</option>
+                        {% endfor %}
+                    </select><br><br>
+
+                    {% if institute %}
+
+                        <label for="groups">Group</label>
+                        <select name="Groups" id="groups"> {{institute}}
+                            {% for grp in grp_set %}
+                                {% if grp.institute.site_id = institute %}
+                                    <option value="{{grp.site_id}}">{{grp.name}}
+                                {% endif %}
+                            {% endfor %}
+                        </select><br><br>
+
+                        <input type="submit" class="btn btn-default" value="Save" formaction="{% url 'rate:get_subjects' table.id %}"/>
+                        {% if rows %}
+                            <input type="submit" class="btn btn-default" value="Reset" formaction="{% url 'rate:reset_subjects' table.id %}"/>
+                        {% endif %}
+
+                    {% endif %}
+                </form>
+    </div>
+
+    {% if rows %}
+        <h1>Your rate is <span style="color: {{color}}">{{result}}</span> </h1>
+    {% endif %}
+    <p>
+        <a href="{% url 'rate:delete_table' table.id %}" class="btn btn-default" role="button">Delete Table</a>
+        <a href="{% url 'rate:edit_table' table.id %}" class="btn btn-default" role="button">Rename Table</a>
+        <a href="{% url 'rate:tables_list' %}" class="btn btn-default" role="button">See all tables</a>
+    </p>
+
+</div>
+
+
+{% endblock content %}

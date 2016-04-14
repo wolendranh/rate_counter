@@ -40,3 +40,21 @@ class Rate(models.Model):
     """
     user = models.ForeignKey(User, related_name='rate')
     value = models.FloatField()
+
+
+class Table(models.Model):
+    """
+    Table model representing rate table
+    """
+    user = models.ForeignKey(User, related_name='table', default=1)
+    name = models.CharField(max_length=200)
+
+
+class TableRow(models.Model):
+    """
+    TableRow model representing each row in rate table
+    """
+    table = models.ForeignKey(Table, related_name='table_row')
+    name = models.CharField(max_length=100, null=True)
+    point = models.FloatField(default=0.0)
+    coefficient = models.FloatField(default=1.0)
