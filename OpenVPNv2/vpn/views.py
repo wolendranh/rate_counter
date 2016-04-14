@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from vpn.services import generate_certs,revoke_certs, stats_certs
 import subprocess
 from django.contrib import auth
-
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -34,6 +34,7 @@ def status_vpn(request):
 def home_page(request):
     return render_to_response('index.html', {'username': auth.get_user(request).username} )
 
+@login_required
 @csrf_protect
 def tabs(request,vpn_id=1):
     path = PathsVPN.objects.get(pathsvpn_general_id=vpn_id)
@@ -63,6 +64,8 @@ def tabs(request,vpn_id=1):
         "name_vpn": name_vpn,
 	}
     return TemplateResponse(request, 'user_managment_cert.html', context)
+
+
 
 def list_vpn(request, vpn_id=1):
     args = {}

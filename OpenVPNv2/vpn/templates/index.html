@@ -39,7 +39,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="{% url "home" %}">Home</a></li>
             <li><a href='{% url "status_vpn" %}'>Status</a></li>
             <li><a href='{% url "list_vpn" %}'>User Managment</a></li>
             <li><a href="#contact1">Configuration</a></li>
@@ -75,14 +75,13 @@
 
     </nav>
 
-
-
     {% block tabs_manage_vpn %}{% endblock %}
     <div class="container-fluid text-left">
              <div class="row content">
                     <div class="col-sm-2 sidenav">
 
  </div>
+
 
 
  <div class="col-md-8 text-left">
@@ -100,9 +99,7 @@
         <div class="container center">
     <div class="row">
          <div class="col-md-5 col-md-offset-4">
-         <form>
-         {%  block login %}{% endblock %}
-</form>
+             {%  block login %}{% endblock %}
     </div>
     </div>
     </div>
