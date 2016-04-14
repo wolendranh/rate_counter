@@ -1,0 +1,31 @@
+table {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-size: 15px;
+  max-width: 70%;
+  width: 70%;
+  text-align: center;
+  border-collapse: collapse;
+  border-top: 1px solid #5ac2f1;
+  border-bottom: 1px solid #150915;
+}
+th {
+  font-size: 15px;
+  font-weight: normal;
+  text-align: center;
+  background: rgba(19, 19, 19, 0.33);
+  border-top: 2px solid rgba(0, 0, 0, 0.82);
+  border-bottom: 1px solid #fff;
+  color: rgba(21, 9, 21, 0.94);
+  padding: 8px;
+}
+td {
+  background: rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid #fff;
+  color: #150915;
+  border-top: 1px solid transparent;
+  padding: 8px;
+}
+tr:hover td {
+  background: rgba(255, 131, 25, 0);
+}
+

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <table>
+<th>Certificate name</th><th>Status</th>
+
+{% for line in form %}
+    <tr>
+    <td>{{ line.certs_revoke_name }}</td><td>{{ line.certs_revoke_status }}</td>
+{% endfor %}
+    </table>
+
+<form action="" method="post">{% csrf_token %}
+    <input type="submit" class="button" value="Refresh" name="Refresh">
+</form>
+
+</body>
+</html>

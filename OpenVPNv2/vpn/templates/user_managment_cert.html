@@ -1,0 +1,65 @@
+{% extends "index.html" %}
+{% load bootstrap3 %}
+{% block tabs_manage_vpn %}
+<div class="container">
+  <h2>User Managment {{ name_vpn }} </h2>
+
+  <ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#home">Generate</a></li>
+    <li><a data-toggle="pill" href="#menu1">Revoke</a></li>
+    <li><a data-toggle="pill" href="#menu2">Status</a></li>
+    <li><a data-toggle="pill" href="#menu3">Menu 3</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>Generate certificate</h3>
+      <p></p>
+<form method='POST' action=''>{% csrf_token %}
+      {% bootstrap_form gform  %}
+<input type='submit' value='Generate cert' />
+</form>
+
+    </div>
+    <div id="menu1" class="tab-pane fade">
+     <p></p>
+<h3>Revoke certificate</h3>
+
+<form method='POST' action=''>{% csrf_token %}
+{%  bootstrap_form form %}
+    <input type='submit' value='Revoke cert' />
+
+</form>
+
+    </div>
+    <div id="menu2" class="tab-pane fade">
+      <h3>Status certificate</h3>
+
+
+<table class="table">
+<th>Certificate name</th><th>Status</th>
+
+{% for line in sform %}
+    <tr>
+    <td>{{ line.certs_revoke_name }}</td><td>{{ line.certs_revoke_status }}</td>
+    </tr>
+{% endfor %}
+    </table>
+
+<form action="" method="post">{% csrf_token %}
+    <input type="submit" class="button" value="Refresh" name="Refresh">
+</form>
+
+
+    </div>
+    <div id="menu3" class="tab-pane fade">
+      <h3>Some else</h3>
+      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
+
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

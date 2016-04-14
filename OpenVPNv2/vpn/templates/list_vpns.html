@@ -1,0 +1,19 @@
+{% extends 'index.html' %}
+{% block list_vpn %}
+<table class="table">
+<thead>
+<tr>
+    <th>Select VPN for Managment</th>
+</tr>
+</thead>
+<tbody>
+
+    {% for name in form %}
+<tr><p><td><a href="/manage_cert/vpn/{{ name.id }}/">{{ name.general_project_name }}</a></td><p></tr>
+{% endfor %}
+
+</tbody>
+</table>
+{% endblock %}
+
+<!--THIS block show list vpn service
