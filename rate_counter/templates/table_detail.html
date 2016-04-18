@@ -8,21 +8,21 @@
 
 {% block content %}
 
-<div class='col-sm-6 col-sm-offset-3' style="background: lavender">
+<div class='col-sm-6 col-sm-offset-3'>
     <h1>{{table.name}}</h1>
     <form method="POST" action="" enctype="multipart/form-data" >{% csrf_token %}
         <table>
             {% if rows %}
                 <tr>
-                    <td height="32px"><strong>Subject name</strong></td>
+                    <td><strong>Subject name</strong></td>
                     <td><strong>Coef</strong></td>
                     <td><strong>Point</strong></td>
                 </tr>
                 {% for row in rows %}
                     <tr>
                         <td height="40px"><input size=41 onchange="submit" value="{{row.name}}" name="name{{row.id}}" type="text"  maxlength="100"></td>
-                        <td><input style="width: 4em" onchange="submit" value="{{row.coefficient}}" name="kof{{row.id}}" type="number" step="0.5" min="0" max="10"></td>
-                        <td><input style="width: 4em" onchange="submit" value="{{row.point}}" name="bal{{row.id}}" type="number" min="0" max="100"></td>
+                        <td><input id="row_num_input" onchange="submit" value="{{row.coefficient}}" name="coef{{row.id}}" type="number" step="0.5" min="0" max="10"></td>
+                        <td><input id="row_num_input" onchange="submit" value="{{row.point}}" name="score{{row.id}}" type="number" min="0" max="100"></td>
                         <td><a href="{% url 'rate:delete_row' row.id %}" class="btn btn-default" role="button">Delete</a></td>
                     </tr>
                 {% endfor %}
@@ -36,7 +36,7 @@
         </p>
     </form>
 
-    <div style="float: right">
+    <div>
 
                 <form method="post">{% csrf_token %}
                     Get your subject list<br>
@@ -44,17 +44,18 @@
                     <select name="Institutes" id="institutes" onchange="submit();">
                         <option></option>
                         {% for inst_obj in inst_set %}
-                            <option value="{{inst_obj.site_id}}">{{inst_obj.name}}</option>
+                            <option {% if inst_obj.site_id == institute %}selected="selected"{% endif %} value="{{inst_obj.site_id}}">{{inst_obj.name}}</option>
                         {% endfor %}
+
                     </select><br><br>
 
                     {% if institute %}
 
                         <label for="groups">Group</label>
-                        <select name="Groups" id="groups"> {{institute}}
+                        <select name="Groups" id="groups">
                             {% for grp in grp_set %}
                                 {% if grp.institute.site_id = institute %}
-                                    <option value="{{grp.site_id}}">{{grp.name}}
+                                    <option value="{{grp.site_id}}">{{grp.name}}</option>
                                 {% endif %}
                             {% endfor %}
                         </select><br><br>
@@ -69,7 +70,7 @@
     </div>
 
     {% if rows %}
-        <h1>Your rate is <span style="color: {{color}}">{{result}}</span> </h1>
+        <h1>Your rate is <span class="{{color}}">{{result}}</span> </h1>
     {% endif %}
     <p>
         <a href="{% url 'rate:delete_table' table.id %}" class="btn btn-default" role="button">Delete Table</a>

@@ -1,6 +1,9 @@
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, get_list_or_404
-from .models import Institute, Subject, StudentGroup, Table, TableRow
+from django.core.urlresolvers import reverse
 from .forms import TableForm
+from .models import Institute, Subject, StudentGroup, Table, TableRow
+from .utils import get_result, get_color
+
 
 # Create your views here.
 
@@ -13,7 +16,7 @@ def create_table(request):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
-        return HttpResponseRedirect("/rate/detail/%s/" % instance.id)
+        return HttpResponseRedirect(reverse('rate:table_detail', args=[str(instance.id)]))
     context = {
         'form': form
     }
@@ -29,20 +32,20 @@ def edit_table(request, id=None):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
-        return HttpResponseRedirect("/rate/detail/%s/" % instance.id)
+        return HttpResponseRedirect(reverse('rate:table_detail', args=[str(instance.id)]))
     context = {
         'form': form
     }
     return render(request=request, template_name="table_form.html", context=context)
 
 
-def delete_table(id=None):
+def delete_table(request, id=None):
     """
     table removal
     """
     table_obj = Table.objects.get(id=id)
     table_obj.delete()
-    return HttpResponseRedirect("/rate/")
+    return HttpResponseRedirect(reverse("rate:tables_list"))
 
 
 def tables_list(request):
@@ -67,25 +70,12 @@ def table_detail(request, id=None):
     institute = request.POST.get('Institutes')
     table_obj = get_object_or_404(Table, id=id)
     table_rows = TableRow.objects.filter(table=table_obj)
-    coef_sum, point_sum, result = 0, 0, 0
-    if table_rows:
-        for row in table_rows:
-            coef_sum += row.coefficient
-            point_sum += (row.point*row.coefficient)
-        if point_sum:
-            result = point_sum/coef_sum
-    if result < 71:
-        color = 'red'
-    elif 71 <= result < 88:
-        color = 'orange'
-    else:
-        color = 'green'
     context = {
-        'color': color,
+        'color': get_color(get_result(table_rows)),
         'inst_set': inst_set,
         'grp_set': grp_set,
         'institute': institute,
-        'result': round(result, 2),
+        'result': get_result(table_rows),
         'table': table_obj,
         'rows': table_rows
     }
@@ -98,7 +88,7 @@ def create_row(request, id=None):
     """
     table_obj = Table.objects.get(id=id)
     TableRow.objects.create(table=table_obj, name='', coefficient=1, point=0)
-    return HttpResponseRedirect("/rate/detail/%s/" % table_obj.id)
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
 
 
 def edit_rows(request, id=None):
@@ -109,11 +99,11 @@ def edit_rows(request, id=None):
     rows = get_list_or_404(TableRow, table=table_obj)
     for row in rows:
         row.name = request.POST.get('name{}'.format(row.id))
-        row.coefficient = request.POST.get('kof{}'.format(row.id))
-        row.point = request.POST.get('bal{}'.format(row.id))
+        row.coefficient = request.POST.get('coef{}'.format(row.id))
+        row.point = request.POST.get('score{}'.format(row.id))
         row.save()
 
-    return HttpResponseRedirect("/rate/detail/%s/" % table_obj.id)
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
 
 
 def delete_row(request, id=None):
@@ -123,7 +113,7 @@ def delete_row(request, id=None):
     row = TableRow.objects.get(id=id)
     table_obj = row.table
     row.delete()
-    return HttpResponseRedirect("/rate/detail/%s/" % table_obj.id)
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
 
 
 def get_subject_from_db(request, id=None):
@@ -137,7 +127,7 @@ def get_subject_from_db(request, id=None):
     for subject in subjects:
         TableRow.objects.get_or_create(table=table_obj, name=subject.name)
         # if you accidentally removed one of your row it will not overload all your table
-    return HttpResponseRedirect("/rate/detail/%s/" % table_obj.id)
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
 
 
 def reset_subjects(request, id=None):
@@ -154,8 +144,4 @@ def reset_subjects(request, id=None):
     subjects = get_list_or_404(Subject, group=grp_obj)
     for subject in subjects:
         TableRow.objects.get_or_create(table=table_obj, name=subject.name)
-    return HttpResponseRedirect("/rate/detail/%s/" % table_obj.id)
-
-
-
-
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
