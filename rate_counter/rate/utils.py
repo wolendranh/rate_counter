@@ -1,10 +1,10 @@
 def get_color(result):
     if result < 71:
-        color = 'bad_score'
+        color = 'danger'
     elif 71 <= result < 88:
-        color = 'good_score'
+        color = 'warning'
     else:
-        color = 'excellent_score'
+        color = 'success'
     return color
 
 

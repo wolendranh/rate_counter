@@ -1,9 +1,5 @@
-div > div {
-    float: right;
-}
-
 #row_num_input {
-    width: 4em;
+    width: 6em;
 }
 
 .bad_score {
@@ -16,4 +12,16 @@ div > div {
 
 .excellent_score {
     color: darkolivegreen;
+}
+
+th {
+    font-size: large;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
 }

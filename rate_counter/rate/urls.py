@@ -13,4 +13,7 @@ urlpatterns = [
     url(r'^edit_rows/(?P<id>\d+)/$', views.edit_rows, name='edit_rows'),
     url(r'^get_subjects/(?P<id>\d+)/$', views.get_subject_from_db, name='get_subjects'),
     url(r'^reset_subjects/(?P<id>\d+)/$', views.reset_subjects, name='reset_subjects'),
+    url(r'^log_in/$', views.log_in, name='log_in'),
+    url(r'^sign_up/$', views.sign_up, name='sign_up'),
+    url(r'^statistics/$', views.statistics, name='statistics'),
 ]

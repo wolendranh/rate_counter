@@ -75,7 +75,7 @@ def table_detail(request, id=None):
         'inst_set': inst_set,
         'grp_set': grp_set,
         'institute': institute,
-        'result': get_result(table_rows),
+        'result': round(get_result(table_rows), 2),
         'table': table_obj,
         'rows': table_rows
     }
@@ -100,7 +100,7 @@ def edit_rows(request, id=None):
     for row in rows:
         row.name = request.POST.get('name{}'.format(row.id))
         row.coefficient = request.POST.get('coef{}'.format(row.id))
-        row.point = request.POST.get('score{}'.format(row.id))
+        row.point = request.POST.get('grade{}'.format(row.id))
         row.save()
 
     return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
@@ -145,3 +145,15 @@ def reset_subjects(request, id=None):
     for subject in subjects:
         TableRow.objects.get_or_create(table=table_obj, name=subject.name)
     return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
+
+
+def sign_up(request):
+    return render(request, "sign_up.html", {})
+
+
+def log_in(request):
+    return render(request, "log_in.html", {})
+
+
+def statistics(request):
+    return render(request, "statistics.html", {})
