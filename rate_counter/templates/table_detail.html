@@ -35,8 +35,8 @@
                         {% for row in rows %}
                         <tr>
                             <td><input size="120" class="form-control input-md" onchange="submit" value="{{row.name}}" name="name{{row.id}}" type="text"  maxlength="100"></td>
-                            <td><input class="form-control input-md" id="row_num_input" onchange="submit" value="{{row.coefficient}}" name="coef{{row.id}}" type="number" step="0.5" min="0" max="10"></td>
-                            <td><input class="form-control input-md" id="row_num_input" onchange="submit" value="{{row.point}}" name="grade{{row.id}}" type="number" min="0" max="100"></td>
+                            <td><input class="form-control input-md row_num_input"  onchange="submit" value="{{row.coefficient}}" name="coef{{row.id}}" type="number" step="0.5" min="0" max="10"></td>
+                            <td><input class="form-control input-md row_num_input" onchange="submit" value="{{row.point}}" name="grade{{row.id}}" type="number" min="0" max="100"></td>
                             <td align="center"><a href="{% url 'rate:delete_row' row.id %}" class="btn btn-danger" role="button">Delete</a></td>
                         </tr>
                         {% endfor %}

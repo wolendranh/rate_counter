@@ -16,7 +16,7 @@ def create_table(request):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
-        return HttpResponseRedirect(reverse('rate:table_detail', args=[str(instance.id)]))
+        return HttpResponseRedirect(reverse('rate:table_detail', args=[instance.id]))
     context = {
         'form': form
     }
@@ -32,7 +32,7 @@ def edit_table(request, id=None):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
-        return HttpResponseRedirect(reverse('rate:table_detail', args=[str(instance.id)]))
+        return HttpResponseRedirect(reverse('rate:table_detail', args=[instance.id]))
     context = {
         'form': form
     }
@@ -88,7 +88,7 @@ def create_row(request, id=None):
     """
     table_obj = Table.objects.get(id=id)
     TableRow.objects.create(table=table_obj, name='', coefficient=1, point=0)
-    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[table_obj.id]))
 
 
 def edit_rows(request, id=None):
@@ -103,7 +103,7 @@ def edit_rows(request, id=None):
         row.point = request.POST.get('grade{}'.format(row.id))
         row.save()
 
-    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[table_obj.id]))
 
 
 def delete_row(request, id=None):
@@ -113,7 +113,7 @@ def delete_row(request, id=None):
     row = TableRow.objects.get(id=id)
     table_obj = row.table
     row.delete()
-    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[table_obj.id]))
 
 
 def get_subject_from_db(request, id=None):
@@ -127,7 +127,7 @@ def get_subject_from_db(request, id=None):
     for subject in subjects:
         TableRow.objects.get_or_create(table=table_obj, name=subject.name)
         # if you accidentally removed one of your row it will not overload all your table
-    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[table_obj.id]))
 
 
 def reset_subjects(request, id=None):
@@ -144,7 +144,7 @@ def reset_subjects(request, id=None):
     subjects = get_list_or_404(Subject, group=grp_obj)
     for subject in subjects:
         TableRow.objects.get_or_create(table=table_obj, name=subject.name)
-    return HttpResponseRedirect(reverse('rate:table_detail', args=[str(table_obj.id)]))
+    return HttpResponseRedirect(reverse('rate:table_detail', args=[table_obj.id]))
 
 
 def sign_up(request):
