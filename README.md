@@ -1,4 +1,5 @@
 # rate_counter
+#COOMIT GRAPHS
 Test project to count students rate based on their marks
 
 
