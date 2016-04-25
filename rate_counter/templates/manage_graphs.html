@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block buttons %}
+
+    <div class='col-sm-6 col-sm-offset-3'>
+             <div class="col-md-8 text-center">
+                 <p></p>
+                 <p></p>
+                 <p></p>
+
+<p>
+<a href="{% url 'rate:show_buttons'  id  %}" class="btn btn-default" role="button">Show Collumn</a>
+<a href="{% url 'rate:show_graphs_pie'  id  %}" class="btn btn-default" role="button">Show Pie</a>
+<a href ="{% url 'rate:table_detail' id %}" class="btn btn-default" role="button">Back</a>
+
+
+</p>
+</div>
+
+{% block pie_graphs %}{% endblock %}
+ <head>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable({{ djangodict|safe }});
+
+        var options = {
+          chart: {
+            title: 'Rate subjects',
+            subtitle: 'Rate: 2016-2017',
+          }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="columnchart_material" style="width: 900px; height: 500px;"></div>
+  </body>
+    </div>
+
+
+{% endblock %}
+

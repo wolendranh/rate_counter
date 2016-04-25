@@ -1,0 +1,19 @@
+div > div {
+    float: right;
+}
+
+#row_num_input {
+    width: 4em;
+}
+
+.bad_score {
+    color: red;
+}
+
+.good_score {
+    color: darkorange;
+}
+
+.excellent_score {
+    color: darkolivegreen;
+}
