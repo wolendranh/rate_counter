@@ -1,16 +1,11 @@
+import json
 from django.core.urlresolvers import reverse
-from django.shortcuts import HttpResponseRedirect, get_object_or_404, get_list_or_404, render_to_response
-from django.shortcuts import render
+from django.shortcuts import HttpResponseRedirect, get_object_or_404, get_list_or_404, render
 from django.template import RequestContext
-
 
 from .forms import TableForm
 from .models import Institute, Subject, StudentGroup, Table, TableRow
-from .utils import get_result, get_color
-from .tasks import rate_graphs, rate_graphs_pie
-
-import json
-
+from .utils import get_result, get_color, rate_graphs, rate_graphs_pie
 # Create your views here.
 
 
@@ -153,32 +148,27 @@ def reset_subjects(request, id=None):
     return HttpResponseRedirect(reverse('rate:table_detail', args=[table_obj.id]))
 
 
-def show_graphs_collumn(request, id=None):
+def show_graphs_column(request, id=None):
     """
-    display column of rate subjects student
-
+    reflects score of each subject in a column chart
     """
-    table = TableRow.objects.filter(table_id=id)
-    dict_data = rate_graphs(id)
     context = {
-        'djangodict': json.dumps(dict_data),
-             'table': table,
-              'id': id,
-               }
-    return render_to_response('column_graphs.html',context, context_instance=RequestContext(request))
+        'table_data': json.dumps(rate_graphs(id)),
+        'id': id,
+    }
+    return render(request, 'column_graphs.html', context)
 
 
-def show_graphs_pie(request,id=None):
-    '''
+def show_graphs_pie(request, id=None):
+    """
     this block display pie graphs in percents of subject point
-    '''
-    table = TableRow.objects.filter(table_id=id)
-    dict_data = rate_graphs_pie(id)
-    form = {'id':id,
-            'djangodict': json.dumps(dict_data),
-            'table': table,
-            }
-    return render_to_response('pie_graphs.html', form, context_instance=RequestContext(request))
+    """
+    context = {
+        'table_data': json.dumps(rate_graphs_pie(id)),
+        'id': id,
+    }
+    return render(request, 'pie_graphs.html', context)
+
 
 def sign_up(request):
     return render(request, "sign_up.html", {})

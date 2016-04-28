@@ -5,7 +5,7 @@
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Graphs<span class="caret"></span></a>
         <ul class="dropdown-menu">
-            <li><a href="{% url 'rate:graphs_subject_rate'  id  %}">Show Collumn</a></li>
+            <li><a href="{% url 'rate:graphs_subject_rate'  id  %}">Show Column</a></li>
             <li><a href="{% url 'rate:show_graphs_pie'  id  %}">Show Pie</a></li>
             <li><a href ="{% url 'rate:table_detail' id %}">Back</a></li>
         </ul>
@@ -13,16 +13,15 @@
 {% endblock navbar %}
 
 {% block head %}
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load("current", {packages:["corechart"]});
       google.charts.setOnLoadCallback(drawChart);
       function drawChart() {
-        var data = google.visualization.arrayToDataTable({{ djangodict|safe }});
+        var data = google.visualization.arrayToDataTable({{ table_data|safe }});
 
         var options = {
           title: 'Percentage of rate',
-          pieHole: 0.4,
+          pieHole: 0.4
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
@@ -32,6 +31,6 @@
 {% endblock head %}
 
 {% block content %}
-    <div id="donutchart" style="width: 900px; height: 500px;"></div>
+    <div id="donutchart" class="chart_div"></div>
 {% endblock content %}
 

@@ -4,7 +4,7 @@
 
     <meta charset="UTF-8">
     <title>{% block title %}Rate counter{% endblock title %}</title>
-    {% block head %}{% endblock head %}
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -15,7 +15,9 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'rate/js/loader.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'rate/css/base.css' %}">
+    {% block head %}{% endblock head %}
 </head>
 <body>
 
