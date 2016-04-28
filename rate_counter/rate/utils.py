@@ -16,4 +16,4 @@ def get_result(table_rows):
             point_sum += (row.point * row.coefficient)
         if point_sum:
             result = point_sum / coef_sum
-    return result
+    return round(result, 2)

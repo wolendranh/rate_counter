@@ -75,7 +75,7 @@ def table_detail(request, id=None):
         'inst_set': inst_set,
         'grp_set': grp_set,
         'institute': institute,
-        'result': round(get_result(table_rows), 2),
+        'result': get_result(table_rows),
         'table': table_obj,
         'rows': table_rows
     }
