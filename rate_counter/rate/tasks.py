@@ -1,11 +1,19 @@
 # -*- encoding: utf-8 -*-
-from __future__ import absolute_import
+
+from rate import *
 from celery.task import periodic_task
-from .models import Institute, StudentGroup, Subject
+from models import TableRow
 import requests
 import logging
 from bs4 import BeautifulSoup
 import re
+import os
+import subprocess
+
+
+from django.core.wsgi import get_wsgi_application
+os.environ['DJANGO_SETTINGS_MODULE'] = 'rate_counter.settings'
+application = get_wsgi_application()
 
 
 @periodic_task(run_every=60*60)  # periodicity of execution in seconds (1 hour)
@@ -96,3 +104,37 @@ def get_url(inst='1', group='', semestr='1', semestr_part='1'):
                                                                                                 semestr,
                                                                                                 semestr_part,
                                                                                                 )
+
+
+def rate_graphs(id):
+    '''
+    prepare data for json column charts
+    '''
+    get_data = TableRow.objects.filter(table_id=id)
+    list = []
+    tmp=[]
+    tmp_name=[]
+    for line in get_data:
+        tmp_name.append(line.name)
+        tmp.append(line.point)
+    list.append(tmp_name)
+    list.append(tmp)
+    x = 'Rate Graphs'
+    y = '100'
+    list[0][0]=x
+    list[1][0]=y
+
+    return list
+
+def rate_graphs_pie(id):
+    '''
+    prepare data for json pie charts
+    '''
+    get_data = TableRow.objects.filter(table_id=id)
+    list=[['Rate','Subject']]
+    for line in get_data:
+        tmp=[]
+        tmp.append(line.name)
+        tmp.append(line.point)
+        list.append(tmp)
+    return list
