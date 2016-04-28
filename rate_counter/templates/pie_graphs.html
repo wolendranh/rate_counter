@@ -1,7 +1,18 @@
-{% extends 'manage_graphs.html' %}
-{% block pie_graphs %}
-<html>
-  <head>
+{% extends 'base.html' %}
+
+{% block navbar %}
+
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Graphs<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="{% url 'rate:graphs_subject_rate'  id  %}">Show Collumn</a></li>
+            <li><a href="{% url 'rate:show_graphs_pie'  id  %}">Show Pie</a></li>
+            <li><a href ="{% url 'rate:table_detail' id %}">Back</a></li>
+        </ul>
+    </li>
+{% endblock navbar %}
+
+{% block head %}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load("current", {packages:["corechart"]});
@@ -18,9 +29,9 @@
         chart.draw(data, options);
       }
     </script>
-  </head>
-  <body>
+{% endblock head %}
+
+{% block content %}
     <div id="donutchart" style="width: 900px; height: 500px;"></div>
-  </body>
-</html>
-{% endblock %}
+{% endblock content %}
+

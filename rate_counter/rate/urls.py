@@ -18,7 +18,6 @@ urlpatterns = [
     url(r'^sign_up/$', views.sign_up, name='sign_up'),
     url(r'^statistics/$', views.statistics, name='statistics'),
 
-    url(r'^buttons/(?P<id>\d+)/$', views.show_buttons, name='show_buttons'),
     url(r'^graphs_column/(?P<id>\d+)/$', views.show_graphs_collumn, name='graphs_subject_rate'),
     url(r'^graphs_pie/(?P<id>\d+)/$', views.show_graphs_pie, name='show_graphs_pie'),
 

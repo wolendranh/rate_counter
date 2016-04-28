@@ -152,6 +152,7 @@ def reset_subjects(request, id=None):
         TableRow.objects.get_or_create(table=table_obj, name=subject.name)
     return HttpResponseRedirect(reverse('rate:table_detail', args=[table_obj.id]))
 
+
 def show_graphs_collumn(request, id=None):
     """
     display column of rate subjects student
@@ -166,19 +167,6 @@ def show_graphs_collumn(request, id=None):
                }
     return render_to_response('column_graphs.html',context, context_instance=RequestContext(request))
 
-
-def show_buttons(request,id=None):
-    '''
-    this block display button and as default column sjgbject rate bacouse this is pretty)
-    '''
-
-    table = TableRow.objects.filter(table_id=id)
-    dict_data = rate_graphs(id)
-    form = {'id':id,
-            'djangodict': json.dumps(dict_data),
-            'table': table,
-            }
-    return render_to_response('manage_graphs.html', form, context_instance=RequestContext(request))
 
 def show_graphs_pie(request,id=None):
     '''
