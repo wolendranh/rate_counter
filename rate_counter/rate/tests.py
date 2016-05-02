@@ -4,7 +4,7 @@ from .models import TableRow
 # Create your tests here.
 
 
-class UtilsModuleTest(TestCase):
+class UtilsModuleTestCase(TestCase):
     def test_no_table_rows(self):
         """
         without table rows, there is shouldn't be any result
