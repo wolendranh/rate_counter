@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Graphs<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="{% url 'rate:graphs_subject_rate'  id  %}">Show Column</a></li>
+            <li><a href="{% url 'rate:show_graphs_pie'  id  %}">Show Pie</a></li>
+            <li><a href ="{% url 'rate:table_detail' id %}">Back</a></li>
+        </ul>
+    </li>
+{% endblock navbar %}
+
+{% block head %}
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable({{ table_data|safe }});
+
+        var options = {
+          title: 'Percentage of rate',
+          pieHole: 0.4
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+      }
+    </script>
+{% endblock head %}
+
+{% block content %}
+    <div id="donutchart" class="chart_div"></div>
+{% endblock content %}
+

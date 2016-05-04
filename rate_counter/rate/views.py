@@ -1,10 +1,11 @@
-from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, get_list_or_404
+import json
 from django.core.urlresolvers import reverse
+from django.shortcuts import HttpResponseRedirect, get_object_or_404, get_list_or_404, render
+from django.template import RequestContext
+
 from .forms import TableForm
 from .models import Institute, Subject, StudentGroup, Table, TableRow
-from .utils import get_result, get_color
-
-
+from .utils import get_result, get_color, rate_graphs, rate_graphs_pie
 # Create your views here.
 
 
@@ -145,6 +146,28 @@ def reset_subjects(request, id=None):
     for subject in subjects:
         TableRow.objects.get_or_create(table=table_obj, name=subject.name)
     return HttpResponseRedirect(reverse('rate:table_detail', args=[table_obj.id]))
+
+
+def show_graphs_column(request, id=None):
+    """
+    reflects score of each subject in a column chart
+    """
+    context = {
+        'table_data': json.dumps(rate_graphs(id)),
+        'id': id,
+    }
+    return render(request, 'column_graphs.html', context)
+
+
+def show_graphs_pie(request, id=None):
+    """
+    this block display pie graphs in percents of subject point
+    """
+    context = {
+        'table_data': json.dumps(rate_graphs_pie(id)),
+        'id': id,
+    }
+    return render(request, 'pie_graphs.html', context)
 
 
 def sign_up(request):

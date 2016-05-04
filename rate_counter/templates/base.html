@@ -15,7 +15,9 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'rate/js/loader.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'rate/css/base.css' %}">
+    {% block head %}{% endblock head %}
 </head>
 <body>
 

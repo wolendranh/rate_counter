@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Graphs<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="{% url 'rate:graphs_subject_rate'  id  %}">Show Collumn</a></li>
+            <li><a href="{% url 'rate:show_graphs_pie'  id  %}">Show Pie</a></li>
+            <li><a href ="{% url 'rate:table_detail' id %}">Back</a></li>
+        </ul>
+    </li>
+{% endblock navbar %}
+
+{% block head %}
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable({{ table_data|safe }});
+
+        var options = {
+          chart: {
+            title: 'Rate subjects',
+            subtitle: 'Rate: 2016-2017',
+          }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+        chart.draw(data, options);
+      }
+    </script>
+{% endblock head %}
+
+{% block content %}
+    <div id="columnchart_material" class="chart_div"></div>
+{% endblock content  %}

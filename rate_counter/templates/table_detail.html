@@ -16,7 +16,9 @@
             <li><a href="{% url 'rate:tables_list' %}">See all</a></li>
         </ul>
     </li>
-
+    <li>
+        <a href="{% url 'rate:graphs_subject_rate' table.id %}" >Show Graphs</a>
+    </li>
 {% endblock navbar %}
 
 {% block content %}

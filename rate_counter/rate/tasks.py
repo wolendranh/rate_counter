@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
-from __future__ import absolute_import
-from celery.task import periodic_task
-from .models import Institute, StudentGroup, Subject
 import requests
 import logging
-from bs4 import BeautifulSoup
 import re
+from bs4 import BeautifulSoup
+
+from celery.task import periodic_task
+from .models import Institute, StudentGroup, Subject
 
 
 @periodic_task(run_every=60*60)  # periodicity of execution in seconds (1 hour)
