@@ -12,3 +12,4 @@ wheel==0.24.0
 django-google-charts
 django-qsstats-magic
 python-dateutil
+django-crispy-forms==1.6.0

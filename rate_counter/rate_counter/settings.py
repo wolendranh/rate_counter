@@ -38,8 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rate'
+    # third party
+    'crispy_forms',
+    # local apps
+    'rate',
 ]
+
+# CRISPY_FORMS
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # CELERY STUFF
 INSTALLED_APPS += ("djcelery", )
