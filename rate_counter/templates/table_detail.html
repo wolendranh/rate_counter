@@ -27,11 +27,13 @@
             <form method="POST" action="{% url 'rate:edit_rows' table.id %}" enctype="multipart/form-data" >{% csrf_token %}
                 <table class="table-condensed">
                     <thead>
+                    {% if rows %}
                         <tr>
                             <th>Subject name</th>
                             <th>Multiplier</th>
                             <th>Grade</th>
                         </tr>
+                    {% endif %}
                     </thead>
                     <tbody>
                         {% for row in rows %}
