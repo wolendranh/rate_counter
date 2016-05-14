@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    {{ table.name }} | {{ block.super }}
+
+{% endblock title %}
+
+{% block navbar %}
+
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Table<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="{% url 'rate:delete_table' table.id %}">Delete</a></li>
+            <li><a href="{% url 'rate:edit_table' table.id %}">Rename</a></li>
+            <li><a href="{% url 'rate:tables_list' %}">See all</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="{% url 'rate:graphs_subject_rate' table.id %}" >Show Graphs</a>
+    </li>
+{% endblock navbar %}
+
+{% block content %}
+
+            <h1>{{table.name}}</h1><br><br>
+            <form method="POST" action="{% url 'rate:edit_rows' table.id %}" enctype="multipart/form-data" >{% csrf_token %}
+                <table class="table-condensed">
+                    <thead>
+                    {% if rows %}
+                        <tr>
+                            <th>Subject name</th>
+                            <th>Multiplier</th>
+                            <th>Grade</th>
+                        </tr>
+                    {% endif %}
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <td><input size="120" class="form-control input-md" onchange="submit" value="{{row.name}}" name="name{{row.id}}" type="text"  maxlength="100"></td>
+                            <td><input class="form-control input-md row_num_input"  onchange="submit" value="{{row.coefficient}}" name="coef{{row.id}}" type="number" step="0.5" min="0" max="10"></td>
+                            <td><input class="form-control input-md row_num_input" onchange="submit" value="{{row.point}}" name="grade{{row.id}}" type="number" min="0" max="100"></td>
+                            <td align="center"><a href="{% url 'rate:delete_row' row.id %}" class="btn btn-danger" role="button">Delete</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table><br>
+
+            <div>
+                <a href="{% url 'rate:create_row' table.id %}" class="btn btn-primary" role="button">Add new row</a>
+                {% if rows %}
+                    <input type="submit" class="btn btn-primary" value="Save" formaction="{% url 'rate:edit_rows' table.id %}"/>
+                {% endif %}
+            </form>
+
+                <div class="right">
+                    <form method="post">{% csrf_token %}
+                        <select class="form-control input-md" name="Institutes" id="institutes" onchange="submit();">
+                            <option  ></option>
+                            {% for inst_obj in inst_set %}
+                                <option  {% if inst_obj.site_id == institute %}selected="selected"{% endif %} value="{{inst_obj.site_id}}">{{inst_obj.name}}</option>
+                            {% endfor %}
+                        </select><br>
+
+                            <select class="form-control input-md" name="Groups" id="groups">
+                                <option ></option>
+                                {% if institute %}
+                                {% for grp in grp_set %}
+                                    {% if grp.institute.site_id = institute %}
+                                        <option  value="{{grp.site_id}}">{{grp.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                            </select><br>
+
+                            <input type="submit" class="btn btn-success" value="Save" formaction="{% url 'rate:get_subjects' table.id %}"/>
+                            {% if rows %}
+                                <input type="submit" class="btn btn-success" value="Reset" formaction="{% url 'rate:reset_subjects' table.id %}"/>
+                            {% endif %}
+
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="row"></div>
+            <div class="float-left">
+                {% if rows %}
+                    <h1>Your rate is <span class="label label-{{color}}">{{result}}</span></h1>
+                {% endif %}
+                <br>
+            </div>
+
+{% endblock content %}

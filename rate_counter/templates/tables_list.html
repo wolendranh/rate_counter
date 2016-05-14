@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    Tables | {{ block.super }}
+
+{% endblock title %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+    <div class='col-sm-6 col-sm-offset-3'>
+        <p><a href="{% url 'rate:create'%}" class="btn btn-default" role="button">Create New Table</a></p>
+        {%for object in tables_list%}
+            {% if object.user = request.user%}
+                    <a href ="{% url 'rate:table_detail' object.id %}"><h2>{{object.name}}</h2></a>
+                    {% if object.user.get_full_name %}
+                        <p> Author: {{ obj.user.get_full_name }}</p>
+                    {% else %}
+                        <p> Author: {{ object.user }}</p>
+                    {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% else %}
+<div class='col-sm-6 col-sm-offset-3'>
+    <h1>
+        <p><a href="{% url 'login' %}"  role="link">Login</a></p>
+        <p>or</p>
+        <p><a href="{% url 'register' %}"  role="link">Sign Up</a></p>
+    </h1>
+</div>
+{% endif %}
+{% endblock content %}

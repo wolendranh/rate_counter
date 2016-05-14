@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+
+    {{ title }} | {{ block.super }}
+
+{% endblock title %}
+
+{% load staticfiles %}
+
+{% block content %}
+<!--<img src="{% static 'rate/img/mockup/Registration.png' %}" alt="sign_up page">-->
+<div class='col-sm-5 col-sm-offset-3'>
+    <h3>{{ title }}</h3>
+    <hr/>
+    <form method="POST" action="" enctype="multipart/form-data" >{% csrf_token %}
+        {{ form|crispy }}
+        <hr/>
+        <table class="table-condensed">
+            <tr>
+                <td class="log-reg-btn"></td>
+                <td class="log-reg-btn"></td>
+                <td class="log-reg-btn"><input  type="submit" class="right btn btn-primary" value="{{ title }}"/></td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+
+{% endblock content %}
