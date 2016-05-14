@@ -40,13 +40,13 @@
               {% block navbar %}{% endblock navbar %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
-              <li><a href="{% url 'rate:statistics' %}">Statistics</a></li>
-              <li><a href="#">Profile</a></li>
               {% if not request.user.is_authenticated %}
-              <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-              <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                  <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                  <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
               {% else %}
-              <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                  <li><a href="{% url 'rate:statistics' %}">Statistics</a></li>
+                  <li><a href="#">Profile</a></li>
+                  <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
               {% endif %}
           </ul>
         </div>

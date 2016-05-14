@@ -8,14 +8,14 @@ from .forms import UserLoginForm, UserRegisterForm
 def login_view(request):
     form = UserLoginForm(request.POST or None)
     title = "Login"
-    next = request.GET.get('next')
+    next_url = request.GET.get('next')
     if form.is_valid():
         username = form.cleaned_data.get("username")
         password = form.cleaned_data.get("password")
         user = authenticate(username=username, password=password)
         login(request, user)
-        if next:
-            return redirect(next)
+        if next_url:
+            return redirect(next_url)
         return redirect('rate:tables_list')
 
     context = {

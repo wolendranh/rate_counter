@@ -15,11 +15,11 @@ class UserLoginForm(forms.Form):
         if username and password:
             user = authenticate(username=username, password=password)
             if not user:
-                raise forms.ValidationError("User does not exist")
+                raise forms.ValidationError("User {} does not exist".format(username))
             if not user.check_password(password):
                 raise forms.ValidationError("Password is incorrect")
             if not user.is_active:
-                raise forms.ValidationError("User is not active")
+                raise forms.ValidationError("User {} is not active".format(username))
         return super(UserLoginForm, self).clean()
 
 
@@ -54,6 +54,6 @@ class UserRegisterForm(forms.ModelForm):
             raise forms.ValidationError("Emails must match")
         email_qs = User.objects.filter(email=email)
         if email_qs.exists():
-            raise forms.ValidationError("This email addres already exists")
+            raise forms.ValidationError("This email address already exists")
 
         return email
