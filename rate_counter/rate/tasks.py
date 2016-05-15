@@ -91,7 +91,7 @@ def get_url(inst='1', group='', semestr='1', semestr_part='1'):
     """
     Forming URL of page for parsing data
     """
-    return 'http://www.lp.edu.ua/node/40?inst={0}&group={1}&semestr={2}&semest_part={3}'.format(inst,
+    return 'http://old.lp.edu.ua/node/40?inst={0}&group={1}&semestr={2}&semest_part={3}'.format(inst,
                                                                                                 group,
                                                                                                 semestr,
                                                                                                 semestr_part,

@@ -1,5 +1,6 @@
 import json
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, get_list_or_404, render
 from django.template import RequestContext
 
@@ -9,6 +10,7 @@ from .utils import get_result, get_color, rate_graphs, rate_graphs_pie
 # Create your views here.
 
 
+@login_required(login_url='login')
 def create_table(request):
     """
     creation of new table
@@ -16,6 +18,7 @@ def create_table(request):
     form = TableForm(request.POST or None)
     if form.is_valid():
         instance = form.save(commit=False)
+        instance.user = request.user
         instance.save()
         return HttpResponseRedirect(reverse('rate:table_detail', args=[instance.id]))
     context = {
@@ -168,14 +171,6 @@ def show_graphs_pie(request, id=None):
         'id': id,
     }
     return render(request, 'pie_graphs.html', context)
-
-
-def sign_up(request):
-    return render(request, "sign_up.html", {})
-
-
-def log_in(request):
-    return render(request, "log_in.html", {})
 
 
 def statistics(request):
