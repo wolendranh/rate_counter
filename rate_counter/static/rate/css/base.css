@@ -18,3 +18,18 @@ th {
     width: 900px;
     height: 500px;
 }
+
+.log-reg-brd {
+    border:1px solid cornflowerblue;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.table-condensed {
+    width: 100%;
+}
+
+.log-reg-btn {
+    width: 33.3%;
+    text-align: center;
+}
