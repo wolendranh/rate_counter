@@ -96,6 +96,18 @@ WSGI_APPLICATION = 'rate_counter.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'djangostack',
+        'HOST': '/opt/bitnami/postgresql',
+        'PORT': '5432',
+        'USER': 'bitnami',
+        'PASSWORD': 'a6bfd319fb'
+    }
+}
+
+
+EXAMPLE_DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
@@ -143,6 +155,7 @@ STATIC_URL = '/static/'
 # Folders, which contain staticfiles (on devs machines)
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
+    '/opt/bitnami/apps/django/django_projects/rate_counter/rate_counter/static'
     #'/var/www/static/',
 ]
 
